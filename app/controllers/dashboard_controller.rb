@@ -12,15 +12,21 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid2)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/sites.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/sites.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/sites.json").mtime.localtime rescue nil
     
     end
      
     if File.exists?("#{Rails.root}/tmp/statuses/connections.json")
     
       @connections = JSON.parse(File.open("#{Rails.root}/tmp/statuses/connections.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/connections.json").mtime.localtime rescue nil
     
     end
      
@@ -41,15 +47,21 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid2)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/sites.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/sites.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/sites.json").mtime.localtime rescue nil
     
     end
      
     if File.exists?("#{Rails.root}/tmp/statuses/connections.json")
     
       @connections = JSON.parse(File.open("#{Rails.root}/tmp/statuses/connections.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/connections.json").mtime.localtime rescue nil
     
     end
      
@@ -66,9 +78,13 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid1)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/ajax_connections.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_connections.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_connections.json").mtime.localtime rescue nil
     
     end
      
@@ -84,9 +100,13 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid1)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/ajax_person_connections.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_person_connections.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_person_connections.json").mtime.localtime rescue nil
     
     end
      
@@ -106,15 +126,21 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid2)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/sites.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/sites.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/sites.json").mtime.localtime rescue nil
     
     end
      
     if File.exists?("#{Rails.root}/tmp/statuses/connections.json")
     
       @connections = JSON.parse(File.open("#{Rails.root}/tmp/statuses/connections.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/connections.json").mtime.localtime rescue nil
     
     end
      
@@ -128,9 +154,13 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid1)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/ajax_npids_distribution.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_npids_distribution.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_npids_distribution.json").mtime.localtime rescue nil
     
     end
      
@@ -139,6 +169,17 @@ class DashboardController < ActionController::Base
   end
 
   def burdens  
+  
+    @age = nil
+    
+    if File.exists?("#{Rails.root}/tmp/statuses/ajax_burdens.json")
+    
+      @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_burdens.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_burdens.json").mtime.localtime rescue nil
+    
+    end
+     
   end
 
   def ajax_burdens
@@ -149,9 +190,13 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid1)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/ajax_burdens.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_burdens.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_burdens.json").mtime.localtime rescue nil
     
     end
      
@@ -167,9 +212,13 @@ class DashboardController < ActionController::Base
     
     Process.detach(pid1)
  
+    @age = nil
+    
     if File.exists?("#{Rails.root}/tmp/statuses/ajax_movements.json")
     
       @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_movements.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_movements.json").mtime.localtime rescue nil
     
     end
      
@@ -178,6 +227,17 @@ class DashboardController < ActionController::Base
   end
 
   def movements  
+  
+    @age = nil
+    
+    if File.exists?("#{Rails.root}/tmp/statuses/ajax_movements.json")
+    
+      @sites = JSON.parse(File.open("#{Rails.root}/tmp/statuses/ajax_movements.json").read) rescue []
+    
+      @age = File::stat("#{Rails.root}/tmp/statuses/ajax_movements.json").mtime.localtime rescue nil
+    
+    end
+     
   end
 
   def dashboard

@@ -87,10 +87,11 @@
   <body onresize="resizeSVG()">
       
 	  <div id="main" style="padding: 0px; text-align: center; height: 1000px; overflow: hidden;"></div>
+	  <div style="position: absolute; bottom: 10px; left: 5px; border: 1px #eee solid; padding: 5px; color: #999; border-radius: 10px; font-size: 11px; background-color: rgba(200,200,200,0.1)"><b><i>As of:</b></i><span id="age"> </span><%= @age %></div>
 	  
-      <script src="/javascripts/d3.js" charset="utf-8"></script>
-      <script src="/javascripts/bowser.js" charset="utf-8"></script>
-      <script>
+    <script src="/javascripts/d3.js" charset="utf-8"></script>
+    <script src="/javascripts/bowser.js" charset="utf-8"></script>
+    <script>
             
       var zoomlevel = 1;
 
