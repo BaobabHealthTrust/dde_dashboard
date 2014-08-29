@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+
+<title>class Utils::Proxy - Rails Application Documentation</title>
+
+<link href="../fonts.css" rel="stylesheet">
+<link href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/navigation.js"></script>
+<script src="../js/search_index.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/searcher.js"></script>
+<script src="../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-assign_npid_to_person">::assign_npid_to_person</a>
+    
+    <li ><a href="#method-c-assign_temporary_npid">::assign_temporary_npid</a>
+    
+    <li ><a href="#method-c-check_if_npids_available">::check_if_npids_available</a>
+    
+    <li ><a href="#method-c-convert">::convert</a>
+    
+    <li ><a href="#method-c-get_unassigned_npids">::get_unassigned_npids</a>
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-c-request_for_npids">::request_for_npids</a>
+    
+    <li ><a href="#method-c-transpose_params">::transpose_params</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-Utils::Proxy">
+  <h1 id="class-Utils::Proxy" class="class">
+    class Utils::Proxy
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-assign_npid_to_person" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">assign_npid_to_person</span><span
+            class="method-args">(json)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>+ <a
+href="Proxy.html#method-c-assign_npid_to_person">::assign_npid_to_person</a>(JSON):JSON</p>
+          
+          
+
+          
+          <div class="method-source-code" id="assign_npid_to_person-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 29</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">assign_npid_to_person</span>(<span class="ruby-identifier">json</span>)
+
+  <span class="ruby-comment"># @npid_mutex.synchronize do</span>
+    
+    <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;First argument can only be a JSON Object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">json</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/\{(.+)?\}/</span>)
+  
+    <span class="ruby-comment"># result = Npid.unassigned_at_site.first rescue nil</span>
+    
+    <span class="ruby-identifier">result</span> = <span class="ruby-constant">Npid</span>.<span class="ruby-identifier">untaken_at_region</span>.<span class="ruby-identifier">keys</span>([<span class="ruby-constant">CONFIG</span>[<span class="ruby-string">&quot;sitecode&quot;</span>]]).<span class="ruby-identifier">first</span> <span class="ruby-keyword">rescue</span> <span class="ruby-keyword">nil</span>
+    
+    <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">result</span>.<span class="ruby-identifier">nil?</span>
+    
+      <span class="ruby-identifier">js</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">json</span>)
+    
+      <span class="ruby-identifier">result</span>.<span class="ruby-identifier">update_attributes</span>(<span class="ruby-identifier">assigned</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)
+      
+      <span class="ruby-comment"># Keep current npid as a reference for later        </span>
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>] = {} <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>].<span class="ruby-identifier">blank?</span>
+      
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] = [] <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>].<span class="ruby-identifier">blank?</span>
+      
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>].<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">downcase</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;hash&quot;</span>
+        
+        <span class="ruby-identifier">tmp</span> = <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>]
+        
+        <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] = []
+        
+        <span class="ruby-identifier">tmp</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>
+          
+          <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] <span class="ruby-operator">&lt;&lt;</span> {<span class="ruby-identifier">key</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">value</span>}
+          
+        <span class="ruby-keyword">end</span>
+      
+      <span class="ruby-keyword">end</span> 
+  
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] <span class="ruby-operator">&lt;&lt;</span> {<span class="ruby-string">&quot;Old Identification Number&quot;</span> =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;national_id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;_id&quot;</span>])} <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;national_id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;_id&quot;</span>]).<span class="ruby-identifier">blank?</span>
+            
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;national_id&quot;</span>] = <span class="ruby-identifier">result</span>.<span class="ruby-identifier">national_id</span> <span class="ruby-keyword">rescue</span> <span class="ruby-keyword">nil</span>
+      
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;assigned_site&quot;</span>] = <span class="ruby-constant">Site</span>.<span class="ruby-identifier">current</span>.<span class="ruby-identifier">site_code</span> <span class="ruby-keyword">rescue</span> <span class="ruby-keyword">nil</span>
+      
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient_assigned&quot;</span>] = <span class="ruby-keyword">true</span>
+    
+      <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] = <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>].<span class="ruby-identifier">uniq</span>
+    
+      <span class="ruby-keyword">return</span> <span class="ruby-identifier">js</span>.<span class="ruby-identifier">to_json</span>
+      
+    <span class="ruby-keyword">else</span> 
+    
+      <span class="ruby-keyword">return</span> {}.<span class="ruby-identifier">to_json</span>
+      
+    <span class="ruby-keyword">end</span>
+
+  <span class="ruby-comment"># end</span>
+  
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-assign_temporary_npid" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">assign_temporary_npid</span><span
+            class="method-args">(json)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>+ <a
+href="Proxy.html#method-c-assign_temporary_npid">::assign_temporary_npid</a>(JSON):JSON</p>
+          
+          
+
+          
+          <div class="method-source-code" id="assign_temporary_npid-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 91</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">assign_temporary_npid</span>(<span class="ruby-identifier">json</span>)
+
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;First argument can only be a JSON Object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">json</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/\{(.+)?\}/</span>)    
+
+  <span class="ruby-identifier">suffix</span> = <span class="ruby-string">&quot;%02d&quot;</span> <span class="ruby-operator">%</span> (<span class="ruby-identifier">rand</span> <span class="ruby-operator">*</span> <span class="ruby-value">99</span>).<span class="ruby-identifier">round</span>(<span class="ruby-value">0</span>)
+  
+  <span class="ruby-identifier">base</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">convert</span>(<span class="ruby-node">&quot;#{Time.now.strftime(&quot;%y%m%d%H%M%S&quot;)}#{suffix}&quot;</span>.<span class="ruby-identifier">to_i</span>)
+  
+  <span class="ruby-identifier">temporary_id</span> = <span class="ruby-node">&quot;#{Site.current_code}#{base}&quot;</span>
+  
+  <span class="ruby-identifier">js</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">json</span>)
+  
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;identifiers&quot;</span>] = [] <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;identifiers&quot;</span>].<span class="ruby-identifier">nil?</span>
+  
+  <span class="ruby-comment"># Keep current npid as a reference for later          </span>
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>] = {} <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>].<span class="ruby-identifier">blank?</span>
+  
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] = [] <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>].<span class="ruby-identifier">blank?</span>
+  
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient&quot;</span>][<span class="ruby-string">&quot;identifiers&quot;</span>] <span class="ruby-operator">&lt;&lt;</span> {<span class="ruby-string">&quot;Old Identification Number&quot;</span> =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;national_id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;_id&quot;</span>])} <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;national_id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;_id&quot;</span>]).<span class="ruby-identifier">blank?</span>
+  
+  <span class="ruby-comment"># js[&quot;patient&quot;][&quot;identifiers&quot;] &lt;&lt; {&quot;Temporary ID&quot; =&gt; temporary_id}</span>
+  
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;national_id&quot;</span>] = <span class="ruby-identifier">temporary_id</span>
+
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;assigned_site&quot;</span>] = <span class="ruby-constant">Site</span>.<span class="ruby-identifier">current</span>.<span class="ruby-identifier">site_code</span> <span class="ruby-keyword">rescue</span> <span class="ruby-keyword">nil</span>
+  
+  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;patient_assigned&quot;</span>] = <span class="ruby-keyword">true</span>
+  
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">js</span>.<span class="ruby-identifier">to_json</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-check_if_npids_available" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">check_if_npids_available</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>+ <a
+href="Proxy.html#method-c-check_if_npids_available">::check_if_npids_available</a>():BOOLEAN</p>
+          
+          
+
+          
+          <div class="method-source-code" id="check_if_npids_available-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 16</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">check_if_npids_available</span>()
+  <span class="ruby-comment"># result = Npid.unassigned_at_site.count</span>
+  
+  <span class="ruby-identifier">result</span> = <span class="ruby-constant">Npid</span>.<span class="ruby-identifier">untaken_at_region</span>.<span class="ruby-identifier">keys</span>([<span class="ruby-constant">CONFIG</span>[<span class="ruby-string">&quot;sitecode&quot;</span>]]).<span class="ruby-identifier">count</span>
+  
+  <span class="ruby-keyword">return</span> (<span class="ruby-identifier">result</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-convert" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">convert</span><span
+            class="method-args">(num)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Convert a Base 10 <code>number</code> to the specified <code>base</code></p>
+          
+          
+
+          
+          <div class="method-source-code" id="convert-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 201</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">convert</span>(<span class="ruby-identifier">num</span>)
+  <span class="ruby-comment"># we are taking out letters B, I, O, Q, S, Z because they might be</span>
+  <span class="ruby-comment"># mistaken for 8, 1, 0, 0, 5, 2 respectively</span>
+  <span class="ruby-identifier">base_map</span> = [<span class="ruby-string">&#39;0&#39;</span>,<span class="ruby-string">&#39;1&#39;</span>,<span class="ruby-string">&#39;2&#39;</span>,<span class="ruby-string">&#39;3&#39;</span>,<span class="ruby-string">&#39;4&#39;</span>,<span class="ruby-string">&#39;5&#39;</span>,<span class="ruby-string">&#39;6&#39;</span>,<span class="ruby-string">&#39;7&#39;</span>,<span class="ruby-string">&#39;8&#39;</span>,<span class="ruby-string">&#39;9&#39;</span>,<span class="ruby-string">&#39;A&#39;</span>,<span class="ruby-string">&#39;C&#39;</span>,<span class="ruby-string">&#39;D&#39;</span>,<span class="ruby-string">&#39;E&#39;</span>,<span class="ruby-string">&#39;F&#39;</span>,<span class="ruby-string">&#39;G&#39;</span>,
+                <span class="ruby-string">&#39;H&#39;</span>,<span class="ruby-string">&#39;J&#39;</span>,<span class="ruby-string">&#39;K&#39;</span>,<span class="ruby-string">&#39;L&#39;</span>,<span class="ruby-string">&#39;M&#39;</span>,<span class="ruby-string">&#39;N&#39;</span>,<span class="ruby-string">&#39;P&#39;</span>,<span class="ruby-string">&#39;R&#39;</span>,<span class="ruby-string">&#39;T&#39;</span>,<span class="ruby-string">&#39;U&#39;</span>,<span class="ruby-string">&#39;V&#39;</span>,<span class="ruby-string">&#39;W&#39;</span>,<span class="ruby-string">&#39;X&#39;</span>,<span class="ruby-string">&#39;Y&#39;</span>]
+  <span class="ruby-identifier">base</span> = <span class="ruby-value">30</span>
+  <span class="ruby-identifier">results</span> = <span class="ruby-string">&#39;&#39;</span>
+  <span class="ruby-identifier">quotient</span> = <span class="ruby-identifier">num</span>.<span class="ruby-identifier">to_i</span>
+    
+  <span class="ruby-keyword">while</span> <span class="ruby-identifier">quotient</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> 
+    <span class="ruby-identifier">results</span> = <span class="ruby-identifier">base_map</span>[<span class="ruby-identifier">quotient</span> <span class="ruby-operator">%</span> <span class="ruby-identifier">base</span>] <span class="ruby-operator">+</span> <span class="ruby-identifier">results</span>
+    <span class="ruby-identifier">quotient</span> = (<span class="ruby-identifier">quotient</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">base</span>)
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">results</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-get_unassigned_npids" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">get_unassigned_npids</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>+ <a
+href="Proxy.html#method-c-get_unassigned_npids">::get_unassigned_npids</a>():Array(JSON)</p>
+          
+          
+
+          
+          <div class="method-source-code" id="get_unassigned_npids-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 129</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">get_unassigned_npids</span>()
+  <span class="ruby-comment"># Npid.unassigned_at_site.collect{|e| e}</span>
+  
+  <span class="ruby-constant">Npid</span>.<span class="ruby-identifier">untaken_at_region</span>.<span class="ruby-identifier">keys</span>([<span class="ruby-constant">CONFIG</span>[<span class="ruby-string">&quot;sitecode&quot;</span>]]).<span class="ruby-identifier">collect</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">e</span>} <span class="ruby-keyword">rescue</span> []
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+  
+  <span class="ruby-ivar">@npid_mutex</span> = <span class="ruby-constant">Mutex</span>.<span class="ruby-identifier">new</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-request_for_npids" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">request_for_npids</span><span
+            class="method-args">(site, site_code)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>+ <a href="Proxy.html#method-c-request_for_npids">::request_for_npids</a>(</p>
+
+<pre>  site:String,
+  site_code:String
+):BOOLEAN</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="request_for_npids-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 143</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">request_for_npids</span>(<span class="ruby-identifier">site</span>, <span class="ruby-identifier">site_code</span>)
+
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;First argument cannot be blank&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">site</span>.<span class="ruby-identifier">blank?</span>
+  
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;Second argument cannot be blank&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">site_code</span>.<span class="ruby-identifier">blank?</span>
+
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>  <span class="ruby-comment"># Disabled as not being appropriate</span>
+
+  <span class="ruby-identifier">result</span> = <span class="ruby-constant">RestClient</span>.<span class="ruby-identifier">get</span>(<span class="ruby-node">&quot;#{CONFIG[&quot;masterip&quot;]}?site=#{site}&amp;site_code={site_code}&quot;</span>) <span class="ruby-keyword">rescue</span> <span class="ruby-keyword">nil</span>
+  
+  <span class="ruby-keyword">return</span> (<span class="ruby-operator">!</span><span class="ruby-identifier">result</span>.<span class="ruby-identifier">nil?</span>)
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-transpose_params" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">transpose_params</span><span
+            class="method-args">(json)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>+ <a
+href="Proxy.html#method-c-transpose_params">::transpose_params</a>(json):json</p>
+          
+          
+
+          
+          <div class="method-source-code" id="transpose_params-source">
+            <pre><span class="ruby-comment"># File lib/utils/proxy.rb, line 160</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">transpose_params</span>(<span class="ruby-identifier">json</span>)
+ <span class="ruby-comment">#Method to handle json of old format</span>
+   <span class="ruby-identifier">js</span> = <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">json</span>)
+
+   <span class="ruby-keyword">if</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birthdate&quot;</span>].<span class="ruby-identifier">blank?</span>
+     <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birthdate&quot;</span>] = (<span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birth_year&quot;</span>] <span class="ruby-operator">+</span><span class="ruby-string">&quot;-&quot;</span><span class="ruby-operator">+</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birth_month&quot;</span>] <span class="ruby-operator">+</span> <span class="ruby-string">&quot;-&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birth_day&quot;</span>] ).<span class="ruby-identifier">to_date</span> <span class="ruby-keyword">rescue</span> <span class="ruby-string">&quot;&quot;</span>
+   <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">result</span> = {
+    <span class="ruby-string">&quot;npid&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;npid&quot;</span>].<span class="ruby-identifier">blank?</span> <span class="ruby-operator">?</span> <span class="ruby-keyword">nil</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;npid&quot;</span>][<span class="ruby-string">&quot;value&quot;</span>],
+    <span class="ruby-string">&quot;application&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;&quot;</span>,
+    <span class="ruby-string">&quot;birthdate&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birthdate&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+    <span class="ruby-string">&quot;birthdate_estimated&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;birthdate_estimated&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+    <span class="ruby-string">&quot;names&quot;</span> =<span class="ruby-operator">&gt;</span> {
+        <span class="ruby-string">&quot;family_name&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;names&quot;</span>][<span class="ruby-string">&quot;family_name&quot;</span>],
+        <span class="ruby-string">&quot;given_name&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;names&quot;</span>][<span class="ruby-string">&quot;given_name&quot;</span>]
+    },
+    <span class="ruby-string">&quot;gender&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;gender&quot;</span>],
+    <span class="ruby-string">&quot;attributes&quot;</span> =<span class="ruby-operator">&gt;</span> {
+        <span class="ruby-string">&quot;citizenship&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;attributes&quot;</span>][<span class="ruby-string">&quot;citizenship&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;occupation&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&#39;person&#39;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;attributes&quot;</span>][<span class="ruby-string">&quot;occupation&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;home_phone_number&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&#39;person&#39;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;attributes&quot;</span>][<span class="ruby-string">&quot;home_phone_number&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;cell_phone_number&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&#39;person&#39;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;attributes&quot;</span>][<span class="ruby-string">&quot;cell_phone_number&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;office_phone_number&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&#39;person&#39;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;attributes&quot;</span>][<span class="ruby-string">&quot;office_phone_number&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;race&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&#39;person&#39;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;attributes&quot;</span>][<span class="ruby-string">&quot;race&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>
+    },
+    <span class="ruby-string">&quot;addresses&quot;</span> =<span class="ruby-operator">&gt;</span> {
+        <span class="ruby-string">&quot;current_residence&quot;</span> =<span class="ruby-operator">&gt;</span>  <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;city_village&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;current_village&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;city_village&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;current_ta&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;state_province&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;current_district&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;state_province&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;home_village&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;neighbourhood_cell&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;home_ta&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;county_district&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>,
+        <span class="ruby-string">&quot;home_district&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">js</span>[<span class="ruby-string">&quot;person&quot;</span>][<span class="ruby-string">&quot;data&quot;</span>][<span class="ruby-string">&quot;addresses&quot;</span>][<span class="ruby-string">&quot;address2&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-keyword">nil</span>
+    }
+  }
+
+  <span class="ruby-identifier">result</span>.<span class="ruby-identifier">to_json</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

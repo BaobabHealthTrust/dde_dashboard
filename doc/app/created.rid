@@ -1,0 +1,22 @@
+Fri, 29 Aug 2014 10:48:55 +0200
+README.rdoc	Thu, 28 Aug 2014 10:41:12 +0200
+app/controllers/application_controller.rb	Thu, 28 Aug 2014 10:41:12 +0200
+app/controllers/dashboard_controller (copy).rb	Fri, 22 Aug 2014 14:17:02 +0200
+app/controllers/dashboard_controller.rb	Fri, 29 Aug 2014 08:58:42 +0200
+app/controllers/tasks_controller.rb	Thu, 28 Aug 2014 17:24:47 +0200
+app/helpers/application_helper.rb	Thu, 28 Aug 2014 10:41:12 +0200
+app/models/ability.rb	Thu, 10 Jul 2014 14:01:05 +0200
+app/models/administration.rb	Wed, 14 May 2014 23:33:27 +0200
+app/models/connection.rb	Fri, 09 May 2014 16:11:45 +0200
+app/models/footprint.rb	Mon, 16 Jun 2014 16:42:22 +0200
+app/models/npid.rb	Wed, 20 Aug 2014 21:49:47 +0200
+app/models/person.rb	Wed, 20 Aug 2014 18:14:46 +0200
+app/models/requests_que.rb	Tue, 19 Aug 2014 13:03:03 +0200
+app/models/site.rb	Thu, 08 May 2014 18:43:41 +0200
+app/models/user.rb	Wed, 14 May 2014 23:33:27 +0200
+lib/utils/footprint_util.rb	Mon, 16 Jun 2014 16:31:46 +0200
+lib/utils/master.rb	Tue, 19 Aug 2014 12:50:01 +0200
+lib/utils/person_util.rb	Tue, 12 Aug 2014 19:32:47 +0200
+lib/utils/proxy.rb	Tue, 19 Aug 2014 09:40:51 +0200
+lib/utils/u_person.rb	Tue, 19 Aug 2014 19:34:34 +0200
+lib/utils/user_util.rb	Wed, 07 May 2014 16:08:50 +0200
