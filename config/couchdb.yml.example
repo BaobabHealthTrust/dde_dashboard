@@ -1,0 +1,23 @@
+development: &development
+  protocol: 'http'
+  host: localhost
+  port: 5984
+  prefix: dde2
+  suffix: development
+  username:
+  password:
+  age: 5 # minutes
+
+test:
+  <<: *development
+  suffix: test
+
+production:
+  <<: *development
+  suffix: production
+  
+networks:
+  username: username
+  password: password
+  host: ipaddress
+  path: /path

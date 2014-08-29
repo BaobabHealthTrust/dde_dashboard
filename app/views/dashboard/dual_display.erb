@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DDE Dashboard</title>
+    <style>
+      body {
+        overflow: hidden;
+        margin: 0px;
+      }
+
+      .table {
+        display: table;
+      }
+      
+      .row {
+        display: table-row;
+      }
+      
+      .cell {
+        display: table-cell;
+      }
+    </style>
+  </head>
+  <body onresize="resizeTable()" onload="resizeTable()">
+  
+    <div id="main" class="table" style="width: 100%; height: 100%; border: 1px solid #000; position: absolute; top: 0px; left: 0px; z-index: 100; background-color: #fff;">
+      <div class="row">
+        <div class="cell" style="border-right: 1px solid #000;">
+          <iframe id="display1" style="width: 100%; height: 100%; border: none; overflow: hidden;" src="/dashboard_npids_distribution"></iframe>
+        </div>
+        <div class="cell" style="">
+          <iframe id="display2" style="width: 100%; height: 100%; border: none; overflow: hidden;" src="/dashboard_npids"></iframe>
+        </div>
+      </div>
+    </div>
+    
+    <div id="network_map" class="table" style="width: 100%; position: absolute; top: 0px; left: 0px;  z-index: 1;">
+      <div class="row">
+        <div class="cell" style="">
+          <iframe id="network" style="width: 100%; height: 100%; border: none; overflow: hidden;" src="<%= (!@settings.empty? ? 'http://' + @settings['username'].strip + ':' + @settings['password'].strip + '@' + @settings['host'] + @settings['path'].html_safe : '') %>"></iframe>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      <!--
+      
+      var pages = ["/dashboard_npids", "/dashboard_movements", "/dashboard_burdens", "/dashboard_npids", "/dashboard_person", "/dashboard_npids_distribution", "network_map"]
+      
+      var current_pos = 0;
+      var timerHnd;
+      
+      var timerSpacing = 20;
+      
+      function __$(id){
+        return document.getElementById(id);
+      }
+      
+      function switchViews(){
+		  
+        clearTimeout(timerHnd);
+        
+        var current_path = __$("display1").getAttribute("src");
+        var target = __$("display2");
+        var next_path = pages[current_pos];
+        
+        switch(current_pos){
+          case 0:
+            current_pos = 1;
+            break;
+          case 1:
+            current_pos = 2;          
+            break;
+          case 2:
+            current_pos = 3;          
+            break;
+          case 3:
+            current_pos = 4;          
+            break;      
+          case 4:
+            current_pos = 5;          
+            break;      
+          case 5:
+            current_pos = 6;          
+            break;        
+          case 6:
+            current_pos = 0;          
+            break;       
+        }
+        
+        if(__$("network")){
+        
+          if(current_pos == 0 && __$("network").getAttribute("src").trim().length > 0){
+          
+            __$("network_map").style.zIndex = 100;
+            
+            __$("main").style.zIndex = 1;
+                    
+          } else if(target){
+                    
+            __$("network_map").style.zIndex = 1;
+            
+            __$("main").style.zIndex = 100;
+                    
+            target.setAttribute("src", current_path);
+            
+            __$("display1").setAttribute("src", next_path);
+          }
+          
+        } else if(target){
+              
+          __$("main").style.zIndex = 100;
+                  
+          target.setAttribute("src", current_path);
+          
+          __$("display1").setAttribute("src", next_path);
+        }
+        
+        timerHnd = setTimeout("switchViews()", timerSpacing * 1000);
+      }
+      
+      function resizeTable(){
+        __$("display1").style.height = (window.innerHeight) + "px";
+        
+        __$("display2").style.height = (window.innerHeight) + "px";
+              
+        if(__$("network")){        
+          
+          __$("network").style.height = (window.innerHeight) + "px";
+          
+        }
+      }
+      
+      if(__$("network")){
+      
+        var url = unescape(__$("network").getAttribute("src").trim());
+      
+        __$("network").setAttribute("src", url);
+      
+      }
+      
+      timerHnd = setTimeout("switchViews()", timerSpacing * 1000);
+      
+      //-->
+    </script>
+  
+  </body>
+</html>

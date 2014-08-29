@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DDE Dashboard</title>
+    <style>
+
+    body {
+      overflow: hidden;
+    }
+
+    .progress-meter .background-most {
+      fill: #fff;
+    }
+
+    .progress-meter .background {
+      fill: #ccc /*#ec8f21*/;
+    }
+
+    .progress-meter .foreground {
+      fill: #6a91e1;
+    }
+
+    .progress-meter .foreground-red {
+      fill: red;
+    }
+
+    .progress-meter .foreground-orange {
+      fill: #ec8f21;
+    }
+
+    .progress-meter .foreground-green {
+      fill: #3b9a44;
+    }
+
+    .progress-meter .foreground-blue {
+      fill: #1954cd;
+    }
+
+    .progress-meter .foreground-gray {
+      fill: #666;
+    }
+
+    .progress-meter text {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 9px;
+      font-weight: bold;
+    }
+
+    .link {
+      fill: none;
+      stroke: #666;
+      stroke-width: 1.5px;
+    }
+
+    path.link {
+        fill: none;
+        stroke: #666;
+        stroke-width: 1.5px;
+    }
+    marker#licensing {
+        fill: green;
+    }
+    path.link.licensing {
+        stroke: green;
+    }
+    path.link.resolved {
+        stroke-dasharray: 0, 2 1;
+    }
+    circle {
+        fill: #ccc;
+        stroke: #333;
+        stroke-width: 1.5px;
+    }
+    text {
+        font: 10px sans-serif;
+        pointer-events: none;
+    }
+    text.shadow {
+        stroke: #fff;
+        stroke-width: 3px;
+        stroke-opacity: .8;
+    }
+
+    </style>
+  </head>
+  <body onresize="resizeSVG()">
+      
+	  <div id="main" style="padding: 0px; text-align: center; height: 1000px; overflow: hidden;"></div>
+	  
+      <script src="/javascripts/d3.js" charset="utf-8"></script>
+      <script src="/javascripts/bowser.js" charset="utf-8"></script>
+      <script>
+            
+      var zoomlevel = 1;
+
+      var red = "crimson";
+      var green = "#3b9a44";
+      var blue = "#1954cd";
+      var orange = "#ec8f21";
+      var gray = "#666";
+        
+      var lineData = [];
+      var lnData = [];
+      var lineGraph = {};
+
+      var oradius = 17;
+      var arc = d3.svg.arc()
+          .startAngle(0)
+          .innerRadius(0)
+          .outerRadius(oradius);   
+      var twoPi = 2 * Math.PI,
+          progress = 0,
+          formatPercent = d3.format(".0%");
+         
+      var connections = <%= @connections.to_json.html_safe %>; 
+      var sites = <%= @sites.to_json.html_safe %>;
+            
+      var spacing = 10;   
+      var pollInterval = spacing * 1000;
+      var timerHnd;
+
+      var loader = d3.xml("images/mw.svg", function(xml) {
+        document.getElementById("main").appendChild(xml.documentElement);
+          
+        var svg = d3.select("#region")
+                    .style("margin", "auto");
+           
+        var tsvg = svg.append("g")
+            .attr("transform", "translate(355,25)")
+            
+        tsvg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("dy", ".75em")
+              .attr("fill", "green")
+              .style("font-size", "24px")
+              .text("National Patient");
+          
+        tsvg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("dy", ".75em")
+              .attr("fill", "green")
+              .style("font-size", "24px")
+              .text("Identifiers")
+              .attr("transform", "translate(0,30)");
+          
+        tsvg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("dy", ".75em")
+              .attr("fill", "black")
+              .style("font-size", "18px")
+              .text("Distribution Status")
+              .attr("transform", "translate(0,60)");
+          
+        tsvg.append("rect")
+                .style("stroke", "green")
+                .style("stroke-width", "1px")
+                .style("fill", "none")
+                .attr("width", 197)
+                .attr("height", 105)
+                .attr("x", -98)
+                .attr("y", -15)  
+          
+        var lsvg = svg.append("g")
+            .attr("transform", "translate(5,775)")
+            
+        lsvg.append("rect")
+                .style("stroke", "green")
+                .style("stroke-width", "1px")
+                .style("fill", "rgba(0,255,0,0.1)")
+                .attr("width", 150)
+                .attr("height", 30)
+                .attr("x", -5)
+                .attr("y", -20)  
+          
+        lsvg.append("text")
+              .attr("text-anchor", "left")
+              .attr("fill", "green")
+              .style("font-size", "18px")
+              .text("Legend");
+          
+        lsvg.append("rect")
+                .style("stroke", "green")
+                .style("stroke-width", "1px")
+                .style("fill", "none")
+                .attr("width", 150)
+                .attr("height", 150)
+                .attr("x", -5)
+                .attr("y", -20)  
+          
+        lsvg.append("rect")
+                .style("stroke", "none")
+                .style("stroke-width", "1px")
+                .style("fill", "red")
+                .attr("width", 25)
+                .attr("height", 20)
+                .attr("x", 1)
+                .attr("y", 15)  
+                
+        lsvg.append("text")
+              .attr("text-anchor", "left")
+              .attr("fill", "black")
+              .style("font-size", "12px")
+              .text("Used NPIDs")
+              .attr("transform", "translate(30,30)");
+          
+        lsvg.append("rect")
+                .style("stroke", "none")
+                .style("stroke-width", "1px")
+                .style("fill", green)
+                .attr("width", 25)
+                .attr("height", 20)
+                .attr("x", 1)
+                .attr("y", 45)  
+                
+        lsvg.append("text")
+              .attr("text-anchor", "left")
+              .attr("fill", "black")
+              .style("font-size", "12px")
+              .text("Available NPIDs")
+              .attr("transform", "translate(30,60)");
+          
+        lsvg.append("rect")
+                .style("stroke", "none")
+                .style("stroke-width", "1px")
+                .style("fill", "red")
+                .attr("width", 15)
+                .attr("height", 15)
+                .attr("x", 5)
+                .attr("y", 78)  
+                
+        lsvg.append("text")
+              .attr("text-anchor", "left")
+              .attr("fill", "black")
+              .style("font-size", "12px")
+              .text("Master Node")
+              .attr("transform", "translate(30,90)");
+          
+        lsvg.append("circle")
+                .style("stroke", "none")
+                .style("stroke-width", "1px")
+                .style("fill", "red")
+                .attr("r", 6)
+                .attr("cx", 13)
+                .attr("cy", 115)  
+                
+        lsvg.append("text")
+              .attr("text-anchor", "left")
+              .attr("fill", "black")
+              .style("font-size", "12px")
+              .text("Proxy Node")
+              .attr("transform", "translate(30,120)");
+             
+        setTimeout("ajaxTasks()", 500);   
+          
+        resizeSVG();
+        
+      });
+       
+      function loadSites(){
+
+        d3.selectAll("rect.site").remove();
+        
+        d3.selectAll("circle.site").remove();
+
+        for(var i = 0; i < sites.length; i++){
+          var xs = -10;
+          var ys = -10;
+          
+          var xt = -10;
+          var yt = -10;
+          
+          if(sites[i]["x"] != null && sites[i]["y"] != null){
+            if(sites[i]["region"].toLowerCase() == "centre"){
+              
+              xs = Math.round(sites[i]["x"]);
+              ys = Math.round(sites[i]["y"]) + 373;                
+              
+            } else if(sites[i]["region"].toLowerCase() == "north"){
+            
+              xs = Math.round(sites[i]["x"]) + 39
+              ys = Math.round(sites[i]["y"])                
+              
+            } else if(sites[i]["region"].toLowerCase() == "south"){
+            
+              xs = Math.round(sites[i]["x"]) + 212
+              ys = Math.round(sites[i]["y"]) + 552                
+              
+            }
+          }
+        
+          if(d3.select("#" + sites[i]["site_code"].toLowerCase())[0][0] == null){
+            if(sites[i]["type"].toLowerCase() == "master"){
+              d3.select("#region").append("rect")
+                .style("stroke", "white")
+                .style("stroke-width", "1px")
+                .style("fill", "#1954cd")
+                .style("margin", "auto")
+                .attr("class", "site")
+                .attr("width", 8)
+                .attr("height", 8)
+                .attr("x", xs - 4)
+                .attr("y", ys - 4)
+                .attr("id", sites[i]["site_code"].toLowerCase())
+                .attr("tag", sites[i]["name"])
+                .on("mouseover", function(){
+                    d3.select("#" + this.id).attr("r", 6).style("z-index", "100")
+                        .style("fill", "#537ee0"); 
+                    return tooltip.style("visibility", "visible");
+                  })
+                .on("mousemove", function(){
+                    return tooltip.style("top", 
+                        (d3.event.pageY-10)+"px")
+                          .style("left", (d3.event.pageX+20)+"px")
+                          .text(getSiteInfo(this.id));
+                  })
+                .on("mouseout", function(){
+                    d3.select("#" + this.id).attr("r", 6).style("z-index", "10")
+                        .style("fill", "red"); 
+                    return tooltip.style("visibility", "hidden");
+                  });
+             } else {
+                d3.select("#region").append("circle")
+                  .style("stroke", "white")
+                  .style("stroke-width", "1px")
+                  .style("fill", "#1954cd")
+                  .style("margin", "auto")
+                  .attr("class", "site")
+                  .attr("r", 3)
+                  .attr("cx", xs)
+                  .attr("cy", ys)
+                  .attr("id", sites[i]["site_code"].toLowerCase())
+                  .attr("tag", sites[i]["name"])
+                  .on("mouseover", function(){
+                      d3.select("#" + this.id).attr("r", 6).style("z-index", "100")
+                          .style("fill", "#537ee0"); 
+                      return tooltip.style("visibility", "visible");
+                    })
+                  .on("mousemove", function(){
+                      return tooltip.style("top", 
+                          (d3.event.pageY-10)+"px")
+                            .style("left", (d3.event.pageX+20)+"px")
+                            .text(getSiteInfo(this.id));
+                    })
+                  .on("mouseout", function(){
+                      d3.select("#" + this.id).attr("r", 6).style("z-index", "10")
+                          .style("fill", "red"); 
+                      return tooltip.style("visibility", "hidden");
+                    });
+             }
+          }        
+        }
+      }
+
+      function loadProgress(){
+        
+        d3.selectAll("g.progress-meter").remove()
+        
+        d3.selectAll("path.progress-meter").remove();
+        
+        lineData = [];
+        lnData = [];
+        lineGraph = {};
+        foreground = {};
+        text = {};
+        meter = {};
+        
+        for(var i = 0; i < sites.length; i++){  
+          var xs = -10;
+          var ys = -10;
+          
+          var xt = -10;
+          var yt = -10;
+          
+          if(sites[i]["x"] != null && sites[i]["y"] != null){
+            if(sites[i]["region"].toLowerCase() == "centre"){
+              
+              xs = Math.round(sites[i]["x"]);
+              ys = Math.round(sites[i]["y"]) + 373;                
+              
+            } else if(sites[i]["region"].toLowerCase() == "north"){
+            
+              xs = Math.round(sites[i]["x"]) + 39
+              ys = Math.round(sites[i]["y"])                
+              
+            } else if(sites[i]["region"].toLowerCase() == "south"){
+            
+              xs = Math.round(sites[i]["x"]) + 212
+              ys = Math.round(sites[i]["y"]) + 552                
+              
+            }
+          }        
+          
+          var svg = d3.select("#region");
+           
+          var isvg = svg.append("g")
+            .attr("transform", "translate(" + xs + "," + ys + ")")
+                 
+          var meter = isvg.append("g")
+          .attr("class", "progress-meter");
+
+          meter.append("path")
+              .attr("class", "foreground-red")
+              .attr("d", arc.endAngle(twoPi));
+
+          var foreground = meter.append("path")
+              .attr("class", "foreground-green");
+        
+          var pos = sites[i]["proportion"];
+        
+          foreground.attr("d", arc.endAngle(twoPi * pos));
+       }
+         
+        loadSites();
+      }
+           
+      function linkArc(d) {
+        var dx = d.target.x - d.source.x,
+            dy = d.target.y - d.source.y,
+            dr = Math.sqrt(dx * dx + dy * dy);
+        return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+      }
+         
+      var tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("background", "#f6f3d7")
+        .style("padding", "5px")
+        .style("border", "1px solid #000")
+        .style("border-radius", "5px")
+        .text("Tooltip");
+
+      function getSiteInfo(id){
+        var result = id;
+        
+        if(document.getElementById(id)){
+          result = document.getElementById(id).getAttribute("tag");
+        } 
+        
+        return result;
+      }
+
+      function resizeMap(){
+        zoomlevel = 0.65;
+        
+        d3.select('#region').attr('transform','scale(' + zoomlevel + ')');
+      }
+         
+      function toTaskDate(timestamp) {
+        var d = new Date(timestamp * 1000);
+        var hours = d.getHours(), min = d.getMinutes(), secs = d.getSeconds();
+        var year = d.getFullYear(), month = d.getMonth() + 1, day = d.getDate();
+
+        return String(year) + "-" + (month < 10 ? "0" + month : month) + "-" +
+          day + " " + (hours < 10 ? "0" + hours : hours) + ":" +
+          (min < 10 ? "0" + min : min) + ":" + (secs < 10 ? "0" + secs : secs);
+      }
+       
+      function ajaxTasks(){
+         clearTimeout(timerHnd);
+         
+         var url = "/ajax_npids_distribution";
+         
+         var httpRequest = new XMLHttpRequest();
+          httpRequest.onreadystatechange = function() {
+              handleTasks(httpRequest);
+          };
+          try {
+              httpRequest.open('GET', url, true);
+              httpRequest.send(null);
+          } catch(e){
+          }
+      }
+
+      function handleTasks(aXMLHttpRequest) {
+        if (!aXMLHttpRequest) return;                    
+
+        if (aXMLHttpRequest.readyState == 4 && (aXMLHttpRequest.status == 200 || 
+              aXMLHttpRequest.status == 304)) {
+                     
+          try{
+            var result = JSON.parse(aXMLHttpRequest.responseText);
+             
+            sites = result;
+            
+            loadProgress();
+            
+          } catch(e){
+          }
+         
+          timerHnd = setTimeout("ajaxTasks()", pollInterval);           
+        }
+      }
+       
+      function __$(id){
+		return document.getElementById(id);
+	  }
+      
+      function resizeSVG(){
+		  
+		if(__$("main")){
+			
+			__$("main").style.height = (window.innerHeight) + "px";
+			
+		} 
+		 
+      }
+      </script>
+  </body>
+</html>
