@@ -99,7 +99,7 @@
       var current_pos = 0;
       var timerHnd;
       
-      var timerSpacing = 50;
+      var timerSpacing = 40;
       
       function __$(id){
         return document.getElementById(id);
@@ -147,54 +147,58 @@
             
             current_pos = 4;
           
-            break;   
+            break;     
           case 4:
+            current_pos = 5;
+          
+            break;        
+          case 5:            
             level = 1;
             
             next_path = __$("mini1-display2").getAttribute("src");
             
             target = __$("mini1-display2");
             
-            current_pos = 5;
+            current_pos = 6;
           
             break;       
-          case 5:
+          case 6:
             level = 1;
             
             next_path = __$("mini2-display2").getAttribute("src");
             
             target = __$("mini2-display2");
             
-            current_pos = 6;
+            current_pos = 7;
           
             break;         
-          case 6:
+          case 7:
             level = 1;
             
             next_path = __$("mini3-display2").getAttribute("src");
             
             target = __$("mini3-display2");
             
-            current_pos = 7;
+            current_pos = 8;
           
             break;          
-          case 7:
+          case 8:
             level = 1;
             
             next_path = __$("mini4-display2").getAttribute("src");
             
             target = __$("mini4-display2");
             
-            current_pos = 8;
-          
-            break;                
-          case 8:
-            level = 1;
-            
             current_pos = 9;
           
-            break;           
+            break;                
           case 9:
+            level = 1;
+            
+            current_pos = 10;
+          
+            break;           
+          case 10:
             level = 0;
             
             next_path = __$("mini4-display").getAttribute("src");
@@ -210,7 +214,7 @@
         
         if(__$("network")){
         
-          if(current_pos == 4 || current_pos == 8 && __$("network").getAttribute("src").trim().length > 0){
+          if(current_pos == 5 || current_pos == 10 && __$("network").getAttribute("src").trim().length > 0){
           
             __$("network_map").style.zIndex = 100;
             
