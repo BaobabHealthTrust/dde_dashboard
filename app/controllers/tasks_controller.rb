@@ -10,7 +10,20 @@ class TasksController < ActionController::Base
 
     end
 
-    return "Busy" if File.exists?("#{Rails.root}/tmp/statuses/.~#{name}.lock")
+    if File.exists?("#{Rails.root}/tmp/statuses/.~#{name}.lock")
+
+      # Wait for 3 clock cycles
+      if (Time.now - File::stat("#{Rails.root}/tmp/statuses/.~#{name}.lock").mtime) < ((settings["age"].to_i rescue 0) * 3 * 60)
+
+        return "Busy"
+
+      else
+
+        File.delete("#{Rails.root}/tmp/statuses/.~#{name}.lock")
+
+      end
+
+    end
 
     file = File.open("#{Rails.root}/tmp/statuses/.~#{name}.lock", "w")
 
