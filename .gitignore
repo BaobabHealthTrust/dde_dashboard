@@ -18,3 +18,4 @@
 *.lock
 ~*
 *~
+.ruby-version
