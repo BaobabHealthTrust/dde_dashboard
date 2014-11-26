@@ -27,7 +27,7 @@ gem 'spring',        group: :development
 
 gem 'couchrest_model'
 
-# gem 'passenger'
+gem 'passenger'
 
 gem 'rb-readline'
 
@@ -36,6 +36,7 @@ gem "bcrypt-ruby", :require => "bcrypt"
 gem "cancancan", "~> 1.8"
 
 gem 'national_patient_id', '0.1.1'
+
 
 # gem "rack-cors", "~> 0.2.9"
 
