@@ -37,6 +37,8 @@ gem "cancancan", "~> 1.8"
 
 gem 'national_patient_id', '0.1.1'
 
+gem 'rack-cors', '~> 0.3.1'
+
 # gem "rack-cors", "~> 0.2.9"
 
 #gem 'bootstrap-sass', '>= 3.0.0.0'
