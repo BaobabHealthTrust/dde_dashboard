@@ -27,7 +27,7 @@ gem 'spring',        group: :development
 
 gem 'couchrest_model'
 
-# gem 'passenger'
+gem 'passenger'
 
 gem 'rb-readline'
 

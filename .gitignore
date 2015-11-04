@@ -17,3 +17,5 @@
 *.yml
 *.lock
 ~*
+*~
+.ruby-version

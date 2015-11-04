@@ -43,7 +43,7 @@
 
     .progress-meter text {
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size: 9px;
+      font-size: 4px;
       font-weight: bold;
     }
 
@@ -105,10 +105,10 @@
       var lnData = [];
       var lineGraph = {};
 
-      var oradius = 17;
+      var oradius = 7;
       var arc = d3.svg.arc()
           .startAngle(0)
-          .innerRadius(12)
+          .innerRadius(0)
           .outerRadius(oradius);   
       var twoPi = 2 * Math.PI,
           progress = 0,
