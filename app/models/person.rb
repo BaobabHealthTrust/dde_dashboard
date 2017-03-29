@@ -59,7 +59,6 @@ class Person < CouchRest::Model::Base
 
   timestamps!
 
-
   design do
     view :by__id,
          :map => "function(doc) {
@@ -69,6 +68,10 @@ class Person < CouchRest::Model::Base
                 }"
                 
     view :by_old_identification_number
+    
+    view :by_updated_at
+    
+    view :by_created_at
     
     view :by_assigned_site,
          :map => "function(doc) {
